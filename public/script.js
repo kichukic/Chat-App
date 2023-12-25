@@ -12,9 +12,9 @@
       }
     });
 
-    // socket.on("chat message", (message) => {
-    //   appendMessage("Bot", message);
-    // })
+    socket.on("chat message", (message) => {
+      appendMessage("Bot", message);
+    })
 
 
     function appendMessage(sender, message) {
