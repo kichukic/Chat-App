@@ -1,87 +1,138 @@
-const loginForm = document.querySelector("form.login");
+document.addEventListener('DOMContentLoaded', (event) => {
+  const signupForm = document.getElementById('signupForm');
 
-const signupForm = document.querySelector("form.signup-form");
+  signupForm.addEventListener('submit', function (e) {
+    e.preventDefault();
 
-const loginBtn = document.querySelector("label.login");
-
-const signupBtn = document.querySelector("label.signup");
-
-const signupLink = document.querySelector(".signup-link a");
-
-const loginText = document.querySelector(".title-text .login");
-
-const signupText = document.querySelector(".title-text .signup");
-
-signupBtn.onclick = () => {
-  loginForm.style.marginLeft = "-50%";
-  loginText.style.marginLeft = "-50%";
-};
-
-loginBtn.onclick = () => {
-  loginForm.style.marginLeft = "0%";
-  loginText.style.marginLeft = "0%";
-};
-
-signupLink.onclick = () => {
-  signupBtn.click();
-};
-
-// Add event listener for the signup form submission
-// Add event listener for the signup form submission
-signupForm.addEventListener('submit', function(event) {
-  event.preventDefault();
-
-  // Create an object with the user's input
-  const signupData = {
-    name: signupForm.querySelector('input[name="name"]').value,
-    gender: signupForm.querySelector('input[name="gender"]').value, // Assuming radio buttons for gender
-    email: signupForm.querySelector('input[name="email"]').value,
-    password: signupForm.querySelector('input[name="password"]').value,
-    confirmPassword: signupForm.querySelector('input[name="confirmPassword"]').value
-  };
-
-  fetch('/api/signup', { // Replace '/api/signup' with your actual signup API endpoint
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(signupData),
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-    if (data.message.includes('successfully')) {
-      // Handle successful signup, e.g., redirect or update UI
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
+    const formData = new FormData(signupForm);
+    const data = {
+      name: formData.get('txt'),
+      email: formData.get('email'),
+      password: formData.get('pswd'),
+      confirmPassword: formData.get('cpswd')
+    };
+    console.log(">>>>>>>>>>>>.", data);
+    fetch('/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(data => {
+        console.log(data);
+        if (data.status === 200) {
+          showPopup('Signup Successful!, please login');
+          setTimeout(() => {
+            window.location.href = '/api/dash';
+          }, 1000);
+        } else {
+          showPopup('Signup Failed. Please try again.');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        showPopup('An error occurred. Please try again later.');
+      });
   });
+
+  function showPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.textContent = message;
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 3000); // Remove the popup after 3 seconds (adjust as needed)
+  }
 });
 
-// Add event listener for the login form submission
-loginForm.addEventListener('submit', function(event) {
-  event.preventDefault();
-  const formData = new FormData(loginForm);
-  const formObject = {};
-  formData.forEach((value, key) => formObject[key] = value);
 
-  fetch('/api/login', { // Replace '/api/login' with your actual login API endpoint
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(formObject),
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-    if(data.message === "login successful") {
-      localStorage.setItem('token', data.token); // Store the token
-      // Handle successful login, e.g., redirect to a protected page
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loginForm = document.getElementById('loginForm');
+
+  function navigateToDashboard() {
+    window.location.href = '/api/dash'; // You can change this to the correct dashboard path
+  }
+
+  if (localStorage.getItem('token')) {
+    navigateToDashboard();
+    return; // Stop further execution
+  }
+
+  loginForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(loginForm);
+    const data = {
+      email: formData.get('email'),
+      password: formData.get('pswd')
+    };
+
+    fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log("The data is:", data);
+      if (data.token) {
+        // Store the token in local storage
+        localStorage.setItem('token', data.token);
+    
+        showPopup('Login Successful!');
+        // Redirect to the dashboard URL
+        window.location.href = '/api/dash'; // Change this to the correct dashboard path
+      } else {
+        showPopup('Login Failed. Please check your credentials.');
+      }
+    })    
+    .catch((error) => {
+      console.error('Error:', error);
+      showPopup('An error occurred. Please try again later.');
+    });
   });
+
+  function navigateToDashboard() {
+    // Fetch the /api/dash endpoint with the Authorization header
+    fetch('/api/dash', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to load dashboard');
+      }
+      return response.text(); // or response.json() if the response is JSON
+    })
+    .then(dashboardContent => {
+      // Here you would handle the dashboard content, e.g., by updating the DOM
+      // For example, if dashboardContent is HTML:
+      document.body.innerHTML = dashboardContent;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showPopup('Failed to load dashboard. Please try again later.');
+    });
+  }
+
+  function showPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.textContent = message;
+
+    document.body.appendChild(popup);
+
+    setTimeout(() => {
+      popup.remove();
+    }, 3000); // Remove the popup after 3 seconds
+  }
 });

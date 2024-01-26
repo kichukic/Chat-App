@@ -11,11 +11,21 @@ res.render('signup.ejs')
 }
 
 
+
+export const Dashboard = (req,res)=>{
+  try {
+    res.render('index.ejs')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const signup = async (req,res)=>{
  try {
-    const {name,gender,email,password,confirmPassword} = req.body
+    const {name,email,password,confirmPassword} = req.body
+    console.log("the req body is  >>>>>",req.body)
     if(password !== confirmPassword){
-        return res.status(400).json({message:"passwords don't match"})
+        return res.status(408).json({message:"passwords don't match"})
     }
     if(!utils.EmailValidation(email)){
         return res.status(400).json({message:"Invalid Email"})
@@ -24,7 +34,6 @@ export const signup = async (req,res)=>{
     const hash = await bcrypt.hashSync(password,salt)
     await userModel.create({
         name:name,
-        gender:gender,
         email:email,
         password:hash
     })
@@ -46,6 +55,7 @@ export const login = async (req,res)=>{
             if(data){
                 jwt.sign({user:user.email},process.env.secrect ,{expiresIn: "15m"},(err,token)=>{
                     if(token){
+                        console.log("the token is  >>>>>",token)
                         return res.status(200).json({message:"login successful",token:token})
                     }else{
                         return res.status(500).json({message:"something went wrong",err})

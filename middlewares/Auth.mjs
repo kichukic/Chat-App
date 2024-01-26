@@ -15,10 +15,11 @@ export const validateToken=(req,res,next)=>{
                     return res.status(400).json({message:"invalid token",err})
                 }
             })
-        }else{
+        }else if(token === undefined){
             return res.status(400).json({message:"no token provided"})
         }
     } catch (error) {
+        console.log(error)
         return res.status(500).json({message:"something went wrong"})
     }
 }

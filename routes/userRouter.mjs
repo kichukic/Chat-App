@@ -6,6 +6,7 @@ const router = express.Router()
 
 
 router.get("/test",user.testfunc)
+router.get("/dash",token.validateToken,user.Dashboard)
 router.post("/signup",user.signup)
 router.post("/login",user.login)
 

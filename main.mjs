@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import database from './database/dataBase.mjs'
@@ -17,10 +18,10 @@ dotenv.config()
 
 
 let port = process.env.port || 3000
-
+app.use(cors());
 app.use(express.static(join(__dirname, 'public')))
 app.set('view engine', 'ejs')
-app.use(morgan('combined'))
+//app.use(morgan('combined'))
 app.use(bodyParser.json())
 
 
