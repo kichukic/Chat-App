@@ -72,3 +72,4 @@ export const login = async (req,res)=>{
         return res.status(500).json({message:"something went wrong"})
     }
 }
+
