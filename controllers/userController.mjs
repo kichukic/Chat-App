@@ -53,14 +53,16 @@ export const login = async (req,res)=>{
         }else if(user){
          bcrypt.compare(password,user.password,(err,data)=>{
             if(data){
-                jwt.sign({user:user.email},process.env.secrect ,{expiresIn: "15m"},(err,token)=>{
+                  jwt.sign({user:user.email},process.env.secrect ,{expiresIn: "15m"},(err,token)=>{
                     if(token){
-                        console.log("the token is  >>>>>",token)
-                        return res.status(200).json({message:"login successful",token:token})
+                       const refresToken =  jwt.sign({user:user.email},process.env.refreshtoken_secrect,{expiresIn:"1d"})
+
+                        return res.status(200).json({message:"login successful",token:token,refresh_token:refresToken})
                     }else{
                         return res.status(500).json({message:"something went wrong",err})
                     }
                 })
+  
             }else{
                 return res.status(400).json({message:"wrong password",err})
             }

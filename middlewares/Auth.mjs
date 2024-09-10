@@ -4,22 +4,32 @@ dotenv.config()
 
 
 
-export const validateToken=(req,res,next)=>{
-    try {
-        let token = req.headers.authorization.split(" ")[1]
-        if(token){
-            jwt.verify(token,process.env.secrect,(err,data)=>{
-                if(data){
-                    next()
-                }else{
-                    return res.status(400).json({message:"invalid token",err})
-                }
-            })
-        }else if(token === undefined){
-            return res.status(400).json({message:"no token provided"})
-        }
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({message:"something went wrong"})
+export const validateToken = (req, res, next) => {
+    console.log('Authorization Header:', req.headers.authorization); // Log the header
+  
+    if (!req.headers.authorization) {
+      return res.status(404).json({ message: 'Please send a token along' });
     }
-}
+  
+    let token = req.headers.authorization;
+    if (token.startsWith('Bearer ')) {
+      token = token.slice(7, token.length); 
+    }
+    
+    console.log('Token after stripping Bearer:', token); 
+  
+    if (token) {
+      jwt.verify(token, process.env.secrect, (err, data) => {
+        if (data) {
+          console.log('Token verified:', data); 
+          next();
+        } else {
+          console.error('Token verification failed:', err);
+          return res.status(400).json({ message: 'Invalid token', err });
+        }
+      });
+    } else {
+      return res.status(400).json({ message: 'No token provided' });
+    }
+  };
+  

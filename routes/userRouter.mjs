@@ -11,6 +11,7 @@ router.get("/dash",token.validateToken,user.Dashboard)
 router.post("/signup",user.signup)
 router.post("/login",user.login)
 router.post("/gemeni_chat",gemeni.gemeni_ai)
+router.post("/openAi_chat",gemeni.open_ai)
 
 
 
