@@ -5,8 +5,6 @@ dotenv.config()
 
 
 export const validateToken = (req, res, next) => {
-    console.log('Authorization Header:', req.headers.authorization); // Log the header
-  
     if (!req.headers.authorization) {
       return res.status(404).json({ message: 'Please send a token along' });
     }
@@ -15,13 +13,10 @@ export const validateToken = (req, res, next) => {
     if (token.startsWith('Bearer ')) {
       token = token.slice(7, token.length); 
     }
-    
-    console.log('Token after stripping Bearer:', token); 
-  
     if (token) {
       jwt.verify(token, process.env.secrect, (err, data) => {
         if (data) {
-          console.log('Token verified:', data); 
+          req.user = data
           next();
         } else {
           console.error('Token verification failed:', err);

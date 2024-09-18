@@ -14,9 +14,13 @@ export const gemeni_ai = async (req,res)=>{
 
 export const open_ai = async (req,res)=>{
     try {
-        const data = req.body
+        const {data} = req.body
+        const dataobj = Object.keys(data)
+        if(dataobj.length<=0){
+            return res.status(402).json({message : "please send data on body"})
+        }
         const result = await openai.gptfunc(data)
-        return res.status(200).json({message : result})
+        return res.status(200).json({reply : result.text})
     } catch (error) {
         return res.status(500).json({message:"something went wrong"}) 
     }
