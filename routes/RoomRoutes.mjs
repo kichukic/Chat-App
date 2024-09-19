@@ -5,5 +5,7 @@ import * as token from "../middlewares/Auth.mjs"
 const router = express.Router()
 
 router.post("/chatRoom",token.validateToken,chat.chatfunc)
+router.post("/joinRoom",token.validateToken,chat.joinRoom)
+router.post("/leaveRoom",token.validateToken,chat.leaveRoom)
 
 export default router

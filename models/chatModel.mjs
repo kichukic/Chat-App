@@ -20,6 +20,10 @@ const ModelRoom = new mongoose.Schema({
     Messages:{
         type : String,
         required : false
+    },
+    Members:{
+        type:Array,
+        required:false
     }
 })
 

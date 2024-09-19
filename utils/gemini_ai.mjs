@@ -31,8 +31,7 @@ try {
         { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE }
     ];
 
-    const parts = [{ text: `chat back according to this /${data.body}/` }];
-    console.log("isit bad object>>>>>>>>>>",parts)
+    const parts = [{ text: `chat back according to this /${data}/` }];
     const result = await model.generateContent({
         contents: [{ role: "user", parts }],
         generationConfig,
@@ -40,7 +39,6 @@ try {
     });
 
     const response = result.response;
-    console.log(response.text());
     return response.text();
 } catch (error) {
     console.log(error)

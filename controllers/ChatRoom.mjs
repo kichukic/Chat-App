@@ -14,7 +14,7 @@ export const chatfunc= async (req,res)=>{
     if(!roomName){
         return res.status(401).json({message : "please provide a Room Name"})
     }else if(userRoomExists){
-      return res.status(200).json({message : "a room already created by this user"})
+      return res.status(200).json({message : `a room already created by this user ${user}`})
     }else{
       await  roomModel.create({
         roomId:roomId,
@@ -25,5 +25,41 @@ export const chatfunc= async (req,res)=>{
     }
   } catch (error) {
     res.status(500).json({message:"some error occured in the server"})
+  }
+}
+
+export const joinRoom = async(req,res)=>{
+  try {
+      const user = req.user.user
+      const {RoomId}= req.body
+      console.log(">>>>>",RoomId,user)
+      const room = await roomModel.findOne({roomId:RoomId})
+      if(room.Members.includes(user)){
+        return res.status(302).json({message : `${user} is already on the chat room`})
+      }else{
+        await roomModel.updateOne({roomId:RoomId},{$addToSet:{Members:user}})
+        return res.status(200).json({message: `user ${user} is joined the room successfully`})
+      }
+  } catch (error) {
+    return res.status(500).json({message:"No room found"})
+    console.log(error)
+  }
+}
+
+export const leaveRoom = async(req,res)=>{
+  try {
+    const user = req.user.user
+    const {RoomId}= req.body
+    const room = await roomModel.findOne({roomId:RoomId})
+    if(!room){
+      return res.status(400).json({message:"no room found with this id"})
+    }else if(!room.Members.includes(user)){
+      return res.status(404).json({message:`user ${user} has not been found on this chat room`})
+    }else{
+      await roomModel.updateOne({roomId:RoomId},{$pull:{Members:user}})
+      return res.status(200).json({message : `user ${user} has been removed from chat room`})
+    }
+  } catch (error) {
+    return res.status(500).json({message:"internal server error"})
   }
 }
