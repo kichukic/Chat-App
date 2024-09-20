@@ -5,6 +5,7 @@ dotenv.config()
 
 
 export const validateToken = (req, res, next) => {
+   try {
     if (!req.headers.authorization) {
       return res.status(404).json({ message: 'Please send a token along' });
     }
@@ -26,5 +27,8 @@ export const validateToken = (req, res, next) => {
     } else {
       return res.status(400).json({ message: 'No token provided' });
     }
+   } catch (error) {
+    return res.status(500).json({message : "internal server error"})
+   }
   };
   

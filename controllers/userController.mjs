@@ -23,7 +23,6 @@ export const Dashboard = (req,res)=>{
 export const signup = async (req,res)=>{
  try {
     const {name,email,password,confirmPassword} = req.body
-    console.log("the req body is  >>>>>",req.body)
     if(password !== confirmPassword){
         return res.status(408).json({message:"passwords don't match"})
     }
@@ -62,14 +61,13 @@ export const login = async (req,res)=>{
                         return res.status(500).json({message:"something went wrong",err})
                     }
                 })
-  
             }else{
                 return res.status(400).json({message:"wrong password",err})
             }
          })
         }
     } catch (error) {
-        return res.status(500).json({message:"something went wrong"})
+        return res.status(500).json({message:"something went wrong on server"})
     }
 }
 

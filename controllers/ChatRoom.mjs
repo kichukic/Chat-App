@@ -1,6 +1,8 @@
 import dotenv from "dotenv"
 import roomModel from "../models/chatModel.mjs"
 import { generateRandomString } from "../utils/emailValidation.mjs"
+import * as gemeni from "../utils/gemini_ai.mjs"
+import * as openai from "../utils/gpt_ai.mjs"
 dotenv.config()
 
 
@@ -19,7 +21,8 @@ export const chatfunc= async (req,res)=>{
       await  roomModel.create({
         roomId:roomId,
         roomName:roomName,
-        CreatedUser:user 
+        CreatedUser:user ,
+        Admin:user
     })
     return res.status(200).json({message : `room ${roomName} created sucessfully`})
     }
@@ -41,10 +44,11 @@ export const joinRoom = async(req,res)=>{
         return res.status(200).json({message: `user ${user} is joined the room successfully`})
       }
   } catch (error) {
-    return res.status(500).json({message:"No room found"})
     console.log(error)
+    return res.status(500).json({message:"No room found"})
   }
 }
+
 
 export const leaveRoom = async(req,res)=>{
   try {
@@ -62,4 +66,19 @@ export const leaveRoom = async(req,res)=>{
   } catch (error) {
     return res.status(500).json({message:"internal server error"})
   }
+}
+
+export const AutoswitchableAI =async(req,res)=>{
+try {
+  const{data}= req.body
+const result = await gemeni.run_gemeni(data)
+if(result){
+  return res.status(200).json({engine_gemeni: result})
+}else{
+  const result = await openai.gptfunc(data)
+  return res.status(200).json({engine_openAI:result.text})
+}
+} catch (error) {
+  return res.status(500).json({message:"internal server error"})
+}
 }

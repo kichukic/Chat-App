@@ -24,6 +24,10 @@ const ModelRoom = new mongoose.Schema({
     Members:{
         type:Array,
         required:false
+    },
+    Admin:{
+        type:String,
+        required : false
     }
 })
 
