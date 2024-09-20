@@ -1,0 +1,3 @@
+runtime : nodejs18
+env : standard
+entrypoint: npm run start
