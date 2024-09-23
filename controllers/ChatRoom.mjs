@@ -35,7 +35,6 @@ export const joinRoom = async(req,res)=>{
   try {
       const user = req.user.user
       const {RoomId}= req.body
-      console.log(">>>>>",RoomId,user)
       const room = await roomModel.findOne({roomId:RoomId})
       if(room.Members.includes(user)){
         return res.status(302).json({message : `${user} is already on the chat room`})
