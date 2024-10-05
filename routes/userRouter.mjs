@@ -17,3 +17,4 @@ router.post("/openAi_chat",token.validateToken,gemeni.open_ai)
 
 
 export default router
+    

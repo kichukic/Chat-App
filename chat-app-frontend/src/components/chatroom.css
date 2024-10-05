@@ -1,0 +1,176 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #74ebd5 0%, #acb6e5 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .chat-room-container {
+    width: 100%;
+    max-width: 450px;
+    height: 90vh;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Header */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+  }
+  
+  .back-arrow {
+    cursor: pointer;
+    color: white;
+    font-size: 20px;
+  }
+  
+  .chat-title {
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Chat Messages Section */
+  .chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    max-width: 80%;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .message.user {
+    justify-content: flex-end;
+  }
+  
+  .message.bot {
+    justify-content: flex-start;
+  }
+  
+  .message-text {
+    padding: 10px 15px;
+    border-radius: 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 14px;
+  }
+  
+  .message.user .message-text {
+    background-color: #74b9ff;
+  }
+  
+  /* Chat Input Section */
+  .chat-input-section {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+  }
+  
+  .chat-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    margin-right: 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .chat-input:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .send-button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 0; /* Make the button square by removing rounded corners */
+    padding: 10px; /* Keeps the button a square by setting equal padding */
+    width: 40px; /* Set a fixed width */
+    height: 40px; /* Set a fixed height to make it square */
+    color: white;
+    cursor: pointer;
+    display: flex; /* Ensure icon is centered */
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .send-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+  }
+  
+  
+  /* Animations */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .chat-room-container {
+      width: 100%;
+      height: 100vh;
+      max-width: 100%;
+      border-radius: 0;
+    }
+  }
+  
+  .loader {
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top: 5px solid #007bff; /* Change the color to match your theme */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto; /* Center the loader */
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  
