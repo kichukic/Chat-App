@@ -1,14 +1,30 @@
 import dotenv from "dotenv"
 import roomModel from "../models/chatModel.mjs"
+import messageModel from "../models/messageModel.mjs"
 import { generateRandomString } from "../utils/emailValidation.mjs"
 import * as gemeni from "../utils/gemini_ai.mjs"
 import * as openai from "../utils/gpt_ai.mjs"
 dotenv.config()
 
 
+
+
+export const getAllRooms =async(req,res)=>{
+  try {
+    const Rooms = await roomModel.find()
+    const roomData = Rooms.map(room => ({
+      RoomId:room.roomId,
+      RoomName:room.roomName,
+      members:room.Members.length
+    }))
+   return res.status(200).json({Rooms:roomData})
+  } catch (error) {
+    return res.status(500).json({error : "internal server error"})
+  }
+}
+
 export const chatfunc= async (req,res)=>{
   try {
-    console.log("call received")
     const {roomName} = req.body
     const user = req.user.user
     const roomId = await generateRandomString(20)
@@ -67,17 +83,26 @@ export const leaveRoom = async(req,res)=>{
   }
 }
 
-export const AutoswitchableAI =async(req,res)=>{
+export const AutoswitchableAI =async(req,res)=>{ 
 try {
-  const{data}= req.body
-const result = await gemeni.run_gemeni(data)
+  const{data,conversationHistory}= req.body
+  conversationHistory.push(data)
+  const feedback = `theres two persons user and bot continue this chat efficiently: ${conversationHistory.map(msg => `${msg.sender}: ${msg.text}`).join(' | ')}`;
+  console.log(">>>>>>",feedback)
+  const user = req.user.user
+  let botResponse = ''
+  const result = await openai.gptfunc(feedback)
 if(result){
-  return res.status(200).json({engine_gemeni: result})
+  botResponse = result.text
+  console.log("the consled data is >>>>>>>>>>>",botResponse)
+  await messageModel.create({sender:user,message:botResponse})
+  return res.status(200).json({engine_openAI: botResponse})
 }else{
-  const result = await openai.gptfunc(data)
-  return res.status(200).json({engine_openAI:result.text})
+  const result = await gemeni.run_gemeni(data)
+  return res.status(200).json({engine_gemeni:result.text})
 }
 } catch (error) {
+  console.log(error)
   return res.status(500).json({message:"internal server error"})
 }
 }

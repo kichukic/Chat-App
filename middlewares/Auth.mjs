@@ -10,9 +10,10 @@ export const validateToken = (req, res, next) => {
       return res.status(404).json({ message: 'Please send a token along' });
     }
   
-    let token = req.headers.authorization;
+    let token = req.headers.authorization;2
     if (token.startsWith('Bearer ')) {
       token = token.slice(7, token.length); 
+      console.log("the token after",token)
     }
     if (token) {
       jwt.verify(token, process.env.secrect, (err, data) => {
@@ -21,7 +22,7 @@ export const validateToken = (req, res, next) => {
           next();
         } else {
           console.error('Token verification failed:', err);
-          return res.status(400).json({ message: 'Invalid token', err });
+          return res.status(403).json({ message: 'Invalid token', err });
         }
       });
     } else {

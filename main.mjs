@@ -4,10 +4,8 @@ import dotenv from 'dotenv'
 import morgan from 'morgan'
 import database from './database/dataBase.mjs'
 import bodyParser from 'body-parser'
-import { Server } from "socket.io";
 import routes from "./routes/userRouter.mjs"
 import ChatRoute from "./routes/RoomRoutes.mjs"
-import socketLogic from "./socket.io/socketLogic.mjs"
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -33,5 +31,4 @@ app.use("/api/chat",ChatRoute)
 const server = app.listen(port, () => {
     console.log(`Server is running on port ${port}`)
 })
-const io = new Server(server)
-socketLogic(io)
+

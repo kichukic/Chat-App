@@ -13,7 +13,6 @@ const API_KEY = process.env.gemeni_api_key
 
 export const run_gemeni = async (data) => {
 try {
-    console.log("the data is >>>>",data)
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
