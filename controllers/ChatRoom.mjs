@@ -106,3 +106,17 @@ if(result){
   return res.status(500).json({message:"internal server error"})
 }
 }
+
+
+export const RoomMessages = async (req,res)=>{
+try {
+  const {messages,RoomId} = req.body
+  const user  = req.user.user
+  
+
+  
+
+} catch (error) {
+  
+}
+}

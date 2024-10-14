@@ -52,7 +52,7 @@ export const login = async (req,res)=>{
         }else if(user){
          bcrypt.compare(password,user.password,(err,data)=>{
             if(data){
-                  jwt.sign({user:user.email},process.env.secrect ,{expiresIn: "65m"},(err,token)=>{
+                  jwt.sign({user:user.email},process.env.secrect ,{expiresIn: "9h"},(err,token)=>{
                     if(token){
                        const refresToken =  jwt.sign({user:user.email},process.env.refreshtoken_secrect,{expiresIn:"1d"})
 
